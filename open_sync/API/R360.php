@@ -56,6 +56,26 @@ final class R360 {
   if(is_float($result)&&!is_finite($result))return $base+['reason'=>'Nonfinite result'];
   return array_merge($base,['status'=>'PASS_NUMERIC_SUBSET','executed'=>true,'result'=>$result,'precision'=>'PHP binary64','trace'=>[['stage'=>'RESOLVE/LOCK','inputs'=>$params],['stage'=>'EXECUTE','equationUID'=>$id],['stage'=>'AUDIT','scope'=>'numerical registry only']],'reason'=>'Does not certify complete GJG or locked R360 execution']);
  }
+ // One callable class method for each currently recovered registry EquationUID.
+ public static function R360_001(array $variables=[]):array {return self::generate(['equationUID'=>'R360-001','variables'=>$variables]);}
+ public static function R360_002(array $variables=[]):array {return self::generate(['equationUID'=>'R360-002','variables'=>$variables]);}
+ public static function R360_003(array $variables=[]):array {return self::generate(['equationUID'=>'R360-003','variables'=>$variables]);}
+ public static function R360_004(array $variables=[]):array {return self::generate(['equationUID'=>'R360-004','variables'=>$variables]);}
+ public static function R360_005(array $variables=[]):array {return self::generate(['equationUID'=>'R360-005','variables'=>$variables]);}
+ public static function R360_006(array $variables=[]):array {return self::generate(['equationUID'=>'R360-006','variables'=>$variables]);}
+ public static function R360_007(array $variables=[]):array {return self::generate(['equationUID'=>'R360-007','variables'=>$variables]);}
+ public static function R360_008(array $variables=[]):array {return self::generate(['equationUID'=>'R360-008','variables'=>$variables]);}
+ public static function R360_009(array $variables=[]):array {return self::generate(['equationUID'=>'R360-009','variables'=>$variables]);}
+ public static function R360_010(array $variables=[]):array {return self::generate(['equationUID'=>'R360-010','variables'=>$variables]);}
+ public static function R360_011(array $variables=[]):array {return self::generate(['equationUID'=>'R360-011','variables'=>$variables]);}
+ public static function R360_012(array $variables=[]):array {return self::generate(['equationUID'=>'R360-012','variables'=>$variables]);}
+ public static function R360_013(array $variables=[]):array {return self::generate(['equationUID'=>'R360-013','variables'=>$variables]);}
+ public static function R360_014(array $variables=[]):array {return self::generate(['equationUID'=>'R360-014','variables'=>$variables]);}
+ public static function R360_015(array $variables=[]):array {return self::generate(['equationUID'=>'R360-015','variables'=>$variables]);}
+ public static function R360_016(array $variables=[]):array {return self::generate(['equationUID'=>'R360-016','variables'=>$variables]);}
+ public static function R360_017(array $variables=[]):array {return self::generate(['equationUID'=>'R360-017','variables'=>$variables]);}
+ public static function R360_SCALE_REV002(array $variables=[]):array {return self::generate(['equationUID'=>'R360-SCALE-REV002','variables'=>$variables]);}
+
  public static function Barry(array $state):array {return self::generate(['equationUID'=>'R360-006','variables'=>$state]);}
  public static function Norm(array $state):array {return ['status'=>'HOLD','reason'=>'Locked Norm function body not yet recovered','input'=>$state];}
  public static function Missi(array $state):array {return ['status'=>'HOLD','reason'=>'Locked Missi inverse function body not yet recovered','input'=>$state];}
