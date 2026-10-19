@@ -93,5 +93,6 @@ class R360 {
   return array_merge($base,['status'=>'PASS_ARITHMETIC_ONLY','executed'=>true,'value'=>$value,'assignment'=>$assignment,'breadcrumbs'=>$crumbs,'residual'=>$residual,'trace'=>$trace,'reason'=>'No GJG, Barry, Norm, Missi or geometric closure executed']);
  }
 }
-try{respond(200,R360::generate(['equation'=>$equation,'variables'=>$variables,'measurementSystem'=>$unit]));}
+require_once __DIR__.'/R360Executable.php';
+try{respond(200,R360Executable::generate(['equation'=>$equation,'variables'=>$variables,'measurementSystem'=>$unit]));}
 catch(Throwable $e){respond(500,['status'=>'FAIL','executed'=>false,'error'=>'R360 server error']);}
