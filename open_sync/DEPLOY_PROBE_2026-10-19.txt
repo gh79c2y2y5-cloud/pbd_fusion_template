@@ -1,0 +1,6 @@
+R360 sync diagnostic only
+UTC date: 2026-10-19
+Repository: gh79c2y2y5-cloud/pbd_fusion_template
+Path: open_sync/DEPLOY_PROBE_2026-10-19.txt
+Purpose: verify whether this GitHub path synchronizes to the hosting server.
+No R360 mathematics or Joomla files changed.
