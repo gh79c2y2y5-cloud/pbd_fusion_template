@@ -14,6 +14,42 @@ $unit=$data['measurementSystem']??'metric';
 if(!in_array($unit,['metric','imperial','custom'],true))respond(400,['status'=>'FAIL','executed'=>false,'error'=>'Invalid measurement system']);
 $equation=trim($data['equation']);
 class R360 {
+
+ // Canonical registry operations recovered from r360/core/README.md.
+ public static function Barry(array $state):array {
+  if(!isset($state['a'],$state['b'])||!is_numeric($state['a'])||!is_numeric($state['b']))return ['status'=>'HOLD','reason'=>'Barry midpoint requires explicit a and b'];
+  $center=((float)$state['a']+(float)$state['b'])/2;
+  return ['status'=>'PASS_REFERENCE','referenceCenter'=>$center,'equation'=>'R360-006','state'=>$state];
+ }
+ public static function Norm(array $state):array {
+  foreach(['PRE','NORM','POST'] as $k)if(!array_key_exists($k,$state)||!is_numeric($state[$k]))return ['status'=>'HOLD','reason'=>'Norm requires explicit PRE, NORM, POST values'];
+  $pre=(float)$state['PRE'];$norm=(float)$state['NORM'];$post=(float)$state['POST'];
+  return ['status'=>'PASS_COMPARISON','PRE'=>$pre,'NORM'=>$norm,'POST'=>$post,'preDelta'=>$norm-$pre,'postDelta'=>$post-$norm,'signedReturnResidual'=>$post-$pre,'units'=>$state['units']??null,'note'=>'Comparison only; physical conservation not asserted'];
+ }
+ public static function Missi(array $state):array {
+  if(!isset($state['original'],$state['transformed'],$state['inverseReconstructed']))return ['status'=>'HOLD','reason'=>'Missi requires original, transformed, inverseReconstructed'];
+  if(!is_numeric($state['original'])||!is_numeric($state['inverseReconstructed']))return ['status'=>'HOLD','reason'=>'Numeric state required'];
+  $residual=(float)$state['original']-(float)$state['inverseReconstructed'];
+  return ['status'=>'PASS_RESIDUAL_CALC','signedResidual'=>$residual,'closed'=>$residual===0.0,'equation'=>'R360-004/R360-008','note'=>'Caller supplies verified inverse; no inverse inferred'];
+ }
+ public static function registry(string $id,array $p):array {
+  $need=static function(array $keys)use($p):bool {foreach($keys as $k)if(!array_key_exists($k,$p)||!is_numeric($p[$k]))return false;return true;};
+  $hold=static fn(string $why):array=>['status'=>'HOLD','equation'=>$id,'reason'=>$why];
+  $v=null;
+  switch($id){
+   case 'R360-001':if(!$need(['observed','target']))return $hold('observed and target required');$v=(float)$p['observed']-(float)$p['target'];break;
+   case 'R360-002':if(!$need(['exact','working']))return $hold('exact and working required');$v=(float)$p['exact']-(float)$p['working'];break;
+   case 'R360-006':if(!$need(['a','b']))return $hold('a and b required');$v=((float)$p['a']+(float)$p['b'])/2;break;
+   case 'R360-007':if(!$need(['X','n']))return $hold('X and n required');$v=(float)$p['X']*pow(2,(float)$p['n']);break;
+   case 'R360-008':if(!$need(['input','reconstructed']))return $hold('input and reconstructed required');$v=(float)$p['input']-(float)$p['reconstructed'];break;
+   case 'R360-009':if(!$need(['R','S'])||(float)$p['S']==0.0)return $hold('R and nonzero S required');$v=1-abs((float)$p['R'])/abs((float)$p['S']);break;
+   case 'R360-010':$v=pow(sqrt(137),2);break;
+   case 'R360-013':$v=360*(1/360);break;
+   default:return $hold('Operation requires additional canonical mapping or parameters; no guessed implementation');
+  }
+  if(!is_finite($v))return $hold('Nonfinite result');
+  return ['status'=>'PASS_REGISTRY_NUMERIC','equation'=>$id,'value'=>$v,'precision'=>'PHP double','note'=>'Numeric evaluation only; not proof of R360 full geometric closure'];
+ }
  public static function generate(array $request):array {
   $eq=trim($request['equation']);$vars=$request['variables'];$trace=[];$crumbs=[];
   $base=['api'=>'R360','engine'=>'R360 PHP arithmetic subset','equation'=>$eq,'measurementSystem'=>$request['measurementSystem'],'executed'=>false,'status'=>'HOLD','trace'=>[],'breadcrumbs'=>[],'residual'=>null];
