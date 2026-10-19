@@ -76,6 +76,20 @@ final class R360 {
  public static function R360_017(array $variables=[]):array {return self::generate(['equationUID'=>'R360-017','variables'=>$variables]);}
  public static function R360_SCALE_REV002(array $variables=[]):array {return self::generate(['equationUID'=>'R360-SCALE-REV002','variables'=>$variables]);}
 
+
+ public static function profiles(?string $profileUID=null):array {
+  $path=__DIR__.'/R360_Equation_Profiles.csv';
+  if(!is_readable($path))return ['status'=>'HOLD','reason'=>'Profile CSV unavailable'];
+  $handle=fopen($path,'rb');if($handle===false)return ['status'=>'HOLD','reason'=>'Cannot open profile CSV'];
+  $header=fgetcsv($handle);$rows=[];
+  if($header===false){fclose($handle);return [];}
+  while(($line=fgetcsv($handle))!==false){
+   if(count($line)!==count($header))continue;
+   $record=array_combine($header,$line);
+   if($profileUID===null||strcasecmp($record['profileUID'],$profileUID)===0)$rows[]=$record;
+  }
+  fclose($handle);return $rows;
+ }
  public static function Barry(array $state):array {return self::generate(['equationUID'=>'R360-006','variables'=>$state]);}
  public static function Norm(array $state):array {return ['status'=>'HOLD','reason'=>'Locked Norm function body not yet recovered','input'=>$state];}
  public static function Missi(array $state):array {return ['status'=>'HOLD','reason'=>'Locked Missi inverse function body not yet recovered','input'=>$state];}
